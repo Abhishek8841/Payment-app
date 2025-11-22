@@ -1,4 +1,5 @@
 const User = require("../model/user");
+const Account = require("../model/account");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const zod = require("zod");
@@ -59,12 +60,19 @@ exports.signup = async (req, res) => {
                 password: hashedpassword,
             }
         )
+        const newAccount = await Account.create(
+            {
+                userId: newUser._id,
+                balance: Math.floor(Math.random() * 1000),
+            }
+        )
         // newUser.password = undefined
         return res.json(
             {
                 success: true,
                 message: "New user successfully added",
-                newUser
+                newUser,
+                newAccount,
             }
         )
 
@@ -227,6 +235,37 @@ exports.searchUser = async (req, res) => {
             {
                 success: false,
                 message: "Unsuccessfull while fetching the users",
+                error
+            }
+        )
+    }
+}
+
+exports.getBalance = async (req, res) => {
+    try {
+        const id = req.user.userId;
+        const accountFound = await Account.findOne({ userId: id });
+        if (!accountFound) {
+            return res.status(400).json(
+                {
+                    success: false,
+                    message: "Couldn't find the account",
+                }
+            )
+        }
+        return res.json(
+            {
+                success: true,
+                message: "Successfully fetched the Bank Balance",
+                balance: accountFound.balance,
+            }
+        )
+    } catch (error) {
+        console.log("Error while fetching the balance", error);
+        return res.status(500).json(
+            {
+                success: false,
+                message: "Error while fetching the balance",
                 error
             }
         )
