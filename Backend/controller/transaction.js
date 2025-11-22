@@ -7,13 +7,13 @@ exports.moneyTransfer = async (req, res) => {
         session.startTransaction();
         const { to, amount } = req.body;
         const accountBalanceCheck = await Account.findOne({ userId: req.user.userId, balance: { $gte: amount } }).session(session);
-        if (!accountBalanceCheck) {
+        if (!accountBalanceCheck || amount <= 0) {
             await session.abortTransaction();
             session.endSession();
             return res.status(400).json(
                 {
                     success: false,
-                    message: "Not enought money in the bank"
+                    message: "Not enought money in the bank or Amount being sent is not correct"
                 }
             )
         }
@@ -28,7 +28,7 @@ exports.moneyTransfer = async (req, res) => {
                 }
             )
         }
-        await Account.findByIdAndUpdate(accountBalanceCheck._id, { $inc: { balance: -amount } }).session(session);
+        const sender = await Account.findByIdAndUpdate(accountBalanceCheck._id, { $inc: { balance: -amount } }, { new: true }).session(session);
         await Account.findByIdAndUpdate(accountExist._id, { $inc: { balance: amount } }).session(session);
         await session.commitTransaction();
         session.endSession();
@@ -36,6 +36,7 @@ exports.moneyTransfer = async (req, res) => {
             {
                 success: true,
                 message: "Transaction was successful",
+                senderBalance: sender.balance
             }
         )
     } catch (error) {
