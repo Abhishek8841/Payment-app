@@ -271,3 +271,23 @@ exports.getBalance = async (req, res) => {
         )
     }
 }
+
+exports.getAllUser = async (req, res) => {
+    try {
+        const id = req.user.userId;
+        const allUsers = await User.find({ _id: { $ne: id } }).select("username");
+        return res.json(
+            {
+                success: true,
+                message: success,
+                allUsers
+            }
+        )
+    } catch (error) {
+        console.log("Error while fetching the users", error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error while fetching the users'
+        })
+    }
+}
