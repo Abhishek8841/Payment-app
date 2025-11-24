@@ -295,3 +295,36 @@ exports.getAllUser = async (req, res) => {
         })
     }
 }
+
+exports.me = async (req, res) => {
+    try {
+        const id = req.user.userId;
+        const me = await User.findOne({ _id: id });
+        const account = await Account.findOne({ userId: id });
+        return res.json(
+            {
+                success: true,
+                message: "Successfully fetched your details",
+                me,
+                account,
+            }
+        )
+    } catch (error) {
+        return res.status(500).json(
+            {
+                success: false,
+                message: "Couldn't fetch your details",
+                error: error.message,
+            }
+        )
+    }
+}
+
+
+exports.logout = async (req, res) => {
+    res.clearCookie("token"); 
+    return res.json({
+        success: true,
+        message: "Logged out successfully"
+    });
+};

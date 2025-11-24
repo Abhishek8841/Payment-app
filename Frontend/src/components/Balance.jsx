@@ -6,7 +6,7 @@ export const Balance = ({ balance }) => {
                 Your Balance
             </div>
             <div>
-                $ {balance}
+                Rs {balance}
             </div>
         </div>
     );

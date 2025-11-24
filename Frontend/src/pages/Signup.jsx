@@ -41,7 +41,7 @@ const Signup = ({ loggedin, setLoggedin }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-500 flex items-center justify-center">
+    <div className="min-h-screen bg-gray-500 flex items-center justify-center flex-col">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-3xl font-bold text-center mb-2">Sign Up</h2>
         <p className="text-gray-500 text-center mb-6">
@@ -121,6 +121,14 @@ const Signup = ({ loggedin, setLoggedin }) => {
             Sign Up
           </button>
         </form>
+        <div className="mt-4 text-center text-sm">
+          <p className="text-gray-600">
+            Already  have an account?{' '}
+            <button onClick={() => { navigate('/signin') }} className="font-medium text-black hover:underline">
+              Sign In
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );
