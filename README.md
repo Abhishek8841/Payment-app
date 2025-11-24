@@ -33,7 +33,6 @@ All balances and transfers are mock and meant only for learning purposes.
 ### 1. Clone the repository
 ```
 git clone 
-
 ```
 ### 2. Go to the project directory
 ```
@@ -57,12 +56,10 @@ Create a `.env` file inside the backend folder:
 ```
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
-
 ```
 ### 6. Run the backend
 ```
 node index.js
-
 ```
 ### 7. Run the frontend
 ```
