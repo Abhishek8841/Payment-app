@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
-
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 const Signin = ({ loggedin, setLoggedin }) => {
   if (loggedin) return (<><Navigate to="/dashboard"></Navigate></>)
-  const { userDetails, SetUserDetails } = useContext(AppContext);
+  const { userDetails, SetUserDetails, balance, setBalance } = useContext(AppContext);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -20,8 +21,24 @@ const Signin = ({ loggedin, setLoggedin }) => {
     })
   }
 
-  function submitHandler() {
-
+  async function submitHandler(event) {
+    event.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:4000/api/v1/signin", {
+        username: formData.email, password: formData.password
+      });
+      if (response.data.success) {
+        setBalance(response.data.account.balance);
+        toast.success(response.data.message);
+        setLoggedin(true);
+        SetUserDetails(formData);
+        localStorage.setItem("token", response.data.token);
+        navigate("/dashboard");
+      }
+      else toast.error(response.data.message);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (

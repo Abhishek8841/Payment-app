@@ -11,6 +11,6 @@ router.post("/updateDetails", auth, updateDetails);
 router.get("/searchUser", auth, searchUser);
 router.get("/getBalance", auth, getBalance);
 router.post("/moneyTransfer", auth, moneyTransfer);
-router.get("/getAllUser", getAllUser);
+router.get("/getAllUser", auth, getAllUser);
 
-module.exports = router;
+module.exports = router; 

@@ -1,10 +1,15 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useContext, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { AppContext } from "../context/AppContext";
 
 const Send = () => {
-
+//
+    const navigate = useNavigate();
     const location = useLocation();
     const user = location.state?.user;
+    const { balance, setBalance } = useContext(AppContext);
     if (!user) {
         return (
             <div className="text-center mt-20 text-xl">
@@ -12,7 +17,7 @@ const Send = () => {
             </div>
         );
     }
-
+//
     const [formData, setFormData] = useState({
         to: user._id,
         amount: 0,
@@ -22,14 +27,34 @@ const Send = () => {
         setFormData((prev) => {
             return {
                 ...prev,
-                [name]: value,
+                //
+                [name]: Number(value),
+                //
             }
         })
     }
 
-    function paymentHandler() {
-        console.log(formData)
+    async function paymentHandler() {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post("http://localhost:4000/api/v1/moneyTransfer", formData, {
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+                withCredentials: true
+            });
+            if (response.data.success) {
+                toast.success(response.data.message);
+                setBalance(response.data.senderBalance);
+                navigate("/dashboard");
+            }
+            else toast.error(response.data.message);
+        } catch (error) {
+            console.log(error);
+            toast.error(error);
+        }
     }
+
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-8 relative">

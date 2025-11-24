@@ -1,12 +1,15 @@
 import { useState } from 'react'
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const Signup = ({ loggedin, setLoggedin }) => {
   if (loggedin) return (<><Navigate to="/dashboard"></Navigate></>)
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    email: "",
     firstName: "",
     lastName: "",
-    email: "",
     password: "",
   })
   function changeHandler(event) {
@@ -18,9 +21,25 @@ const Signup = ({ loggedin, setLoggedin }) => {
       }
     })
   }
-  function submitHandler() {
-
+  async function submitHandler(event) {
+    event.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:4000/api/v1/signup", {
+        username: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        password: formData.password
+      });
+      if (response.data.success) {
+        navigate("/signin");
+        toast.success(response.data.message);
+      }
+      else toast.error(response.data.message);
+    } catch (error) {
+      console.log(error);
+    }
   }
+
   return (
     <div className="min-h-screen bg-gray-500 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">

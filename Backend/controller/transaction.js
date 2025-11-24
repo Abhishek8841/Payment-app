@@ -1,5 +1,8 @@
 const User = require("../model/user");
 const Account = require("../model/account");
+const mongoose = require("mongoose");
+
+// import mongoose here !!!
 
 exports.moneyTransfer = async (req, res) => {
     const session = await mongoose.startSession();

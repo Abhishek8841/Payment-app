@@ -129,6 +129,8 @@ exports.signin = async (req, res) => {
             expiresIn: "24h",
         })
         // alreadyExistingUser.password = undefined;
+        const account = await Account.findOne({ userId: alreadyExistingUser._id });
+
         return res.cookie("token", token, {
             httpOnly: true,
             expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
@@ -137,7 +139,8 @@ exports.signin = async (req, res) => {
                 success: true,
                 message: "User logged in successfully",
                 alreadyExistingUser,
-                token
+                token,
+                account,
             }
         )
     } catch (error) {
@@ -241,6 +244,7 @@ exports.searchUser = async (req, res) => {
     }
 }
 
+
 exports.getBalance = async (req, res) => {
     try {
         const id = req.user.userId;
@@ -275,11 +279,11 @@ exports.getBalance = async (req, res) => {
 exports.getAllUser = async (req, res) => {
     try {
         const id = req.user.userId;
-        const allUsers = await User.find({ _id: { $ne: id } }).select("username");
+        const allUsers = await User.find({ _id: { $ne: id } });
         return res.json(
             {
                 success: true,
-                message: success,
+                message: "successfully fetched all the users",
                 allUsers
             }
         )
