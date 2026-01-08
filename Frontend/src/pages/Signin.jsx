@@ -38,6 +38,7 @@ const Signin = ({ loggedin, setLoggedin }) => {
       else toast.error(response.data.message);
     } catch (error) {
       console.log(error);
+      toast.error(error.message);
     }
   }
 

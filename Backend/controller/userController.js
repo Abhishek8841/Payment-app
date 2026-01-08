@@ -20,7 +20,6 @@ const signinSchema = zod.object(
     }
 )
 exports.signup = async (req, res) => {
-
     try {
         const { username, firstName, lastName, password } = req.body;
         const response = signupSchema.safeParse({ username, firstName, lastName, password });
